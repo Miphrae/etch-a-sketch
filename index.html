@@ -3,9 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
 <body>
-    
+    <div id="title"> Etch-a-Sketch</div>
+    <div id="container">
+        <div id="options">
+            <input type="color" id="favcolor" value="#ff0000">
+            <div id="color-mode" class="btn"> Color Mode </div>
+            <div id="rainbow-mode" class="btn"> Rainbow Mode </div>
+            <div id="eraser" class="btn"> Eraser </div>
+            <div id="shading-mode" class="btn"> Shading Mode </div>
+            <div id="lighting-mode" class="btn"> Lighting Mode</div>
+            <div id="scale"> 
+                <div id="scale-slider">
+                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                </div>
+                <div id="scale-value"> 16 x 16 </div>
+            </div>
+            <div id="clear"> Clear </div>
+        </div>
+        <div id="blocks"></div>
+    </div>
+    <div id="footer"> Copyright @ 2024 Miphrae </div>
 </body>
 </html>
