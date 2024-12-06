@@ -43,6 +43,10 @@ body {
     align-items: center;
 }
 
+.active {
+    background-color:blueviolet;
+}
+
 #grid {
     height: 65vh;
     width: 65vh;
