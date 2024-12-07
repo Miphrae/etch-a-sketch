@@ -10,6 +10,7 @@ let colorInput = document.querySelector("#favcolor");
 let color = colorInput.getAttribute("value");
 let active = document.querySelector("#color-mode");
 let darkLight = 0;
+let isMouseDown = false;
 
 function RGBToHex(rgb) {
     // Choose correct separator
@@ -61,7 +62,50 @@ function LightenDarkenColor(col, amt) {
   
 }
 
+// Event handler for 'mousedown' on grid
+function onMouseDown(event) {
+    // console.log("mouseDown click");
+    if (event.target.classList.contains("block")) {
+        isMouseDown = true;
+        event.target.style.backgroundColor = flagRainbow
+            ? `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
+            : flagEraser
+            ? "rgb(218, 218, 218)"
+            : flagDarken
+            ? LightenDarkenColor(event.target.style.backgroundColor, (darkLight - 20))
+            : color;
+    }
+}
+
+// Event handler for 'mouseover' on grid
+function onMouseOver(event) {
+    if (isMouseDown && event.target.classList.contains("block")) {
+        event.target.style.backgroundColor = flagRainbow
+            ? `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
+            : flagEraser
+            ? "rgb(218, 218, 218)"
+            : color;
+    }
+}
+
+// Event handler for 'mouseup' document-wide
+function onMouseUp() {
+    isMouseDown = false;
+}
+
+// Event handler for 'mousedown' to prevent default on grid
+function onGridMouseDown(event) {
+    event.preventDefault();
+}
+
+
 function createBlocks(n) {
+
+    grid.removeEventListener("mousedown", onMouseDown);
+    grid.removeEventListener("mouseover", onMouseOver);
+    document.removeEventListener("mouseup", onMouseUp);
+    grid.removeEventListener("mousedown", onGridMouseDown);
+
     // let grid = document.createElement("div");
     grid.innerHTML = "";
     colorInput = document.querySelector("#favcolor");
@@ -95,7 +139,12 @@ function createBlocks(n) {
         grid.appendChild(row);
     }
 
-    let isMouseDown = false;
+    grid.addEventListener("mousedown", onMouseDown);
+    grid.addEventListener("mouseover", onMouseOver);
+    document.addEventListener("mouseup", onMouseUp);
+    grid.addEventListener("mousedown", onGridMouseDown);
+
+    
 
     // blocks.forEach((el) => {
     //     // console.log("Click event triggered!");
@@ -130,48 +179,48 @@ function createBlocks(n) {
     //     });
     // });
 
-    grid.addEventListener("mousedown", (event) => {
-        // console.log("clicked");
-        if (event.target.classList.contains("block")) {
-            isMouseDown = true;
-            // console.log(event.target.style.backgroundColor);
-            event.target.style.backgroundColor = flagRainbow
-                ? `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
-                : flagEraser
-                ? "rgb(218, 218, 218)"
-                : flagDarken
-                ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), -10)
-                // ? console.log("dark activated")
-                : flagLighten
-                ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), 10)
-                : color;
-        }
-    });
+    // grid.addEventListener("mousedown", (event) => {
+    //     // console.log("clicked");
+    //     if (event.target.classList.contains("block")) {
+    //         isMouseDown = true;
+    //         // console.log(event.target.style.backgroundColor);
+    //         event.target.style.backgroundColor = flagRainbow
+    //             ? `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
+    //             : flagEraser
+    //             ? "rgb(218, 218, 218)"
+    //             : flagDarken
+    //             ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), -10)
+    //             // ? console.log("dark activated")
+    //             : flagLighten
+    //             ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), 10)
+    //             : color;
+    //     }
+    // });
     
-    grid.addEventListener("mouseover", (event) => {
-        if (isMouseDown && event.target.classList.contains("block")) {
-            event.target.style.backgroundColor = flagRainbow
-            ? `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
-            : flagEraser
-            ? "rgb(218, 218, 218)"
-            : flagDarken
-            ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), -10)
-            : flagLighten
-            ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), 10)
-            // ? console.log("dark activated")
-            : color;
-        }
-    });
+    // grid.addEventListener("mouseover", (event) => {
+    //     if (isMouseDown && event.target.classList.contains("block")) {
+    //         event.target.style.backgroundColor = flagRainbow
+    //         ? `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
+    //         : flagEraser
+    //         ? "rgb(218, 218, 218)"
+    //         : flagDarken
+    //         ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), -10)
+    //         : flagLighten
+    //         ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), 10)
+    //         // ? console.log("dark activated")
+    //         : color;
+    //     }
+    // });
     
-    document.addEventListener("mouseup", () => {
-        isMouseDown = false;
-    });
+    // document.addEventListener("mouseup", () => {
+    //     isMouseDown = false;
+    // });
 
-    document.addEventListener("mouseup", () => {
-        isMouseDown = false;
-    });
+    // document.addEventListener("mouseup", () => {
+    //     isMouseDown = false;
+    // });
 
-    grid.addEventListener("mousedown", (event) => event.preventDefault());
+    // grid.addEventListener("mousedown", (event) => event.preventDefault());
 
 }
 
