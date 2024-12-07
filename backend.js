@@ -72,9 +72,11 @@ function onMouseDown(event) {
             : flagEraser
             ? "rgb(218, 218, 218)"
             : flagDarken
-            ? LightenDarkenColor(event.target.style.backgroundColor, (darkLight - 20))
+            ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), -20)
+            : flagLighten
+            ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), +20)
             : color;
-    }
+    };
 }
 
 // Event handler for 'mouseover' on grid
@@ -84,8 +86,12 @@ function onMouseOver(event) {
             ? `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
             : flagEraser
             ? "rgb(218, 218, 218)"
+            : flagDarken
+            ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), -20)
+            : flagLighten
+            ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), +20)
             : color;
-    }
+    };
 }
 
 // Event handler for 'mouseup' document-wide
@@ -110,7 +116,15 @@ function createBlocks(n) {
     grid.innerHTML = "";
     colorInput = document.querySelector("#favcolor");
     color = colorInput.getAttribute("value");
+
+    active.classList.remove("active");
     active = document.querySelector("#color-mode");
+    active.classList.add("active");
+    color = colorInput.value;
+    flagRainbow = 0;
+    flagEraser = 0;
+    flagDarken = 0;
+    flagLighten = 0;
 
     colorInput.addEventListener('input', () => {
         if (active == document.querySelector("#color-mode")) {
@@ -302,13 +316,24 @@ let btn = document.querySelectorAll(".btn");
         });
     });
 
-
-
-
 createBlocks(16);
-console.log("Created a 16x16 grid");    
-createBlocks(24);
-createBlocks(60);
+sliderValue.addEventListener('change', () => {
+    // console.log(sliderValue.value);
+    createBlocks(parseInt(sliderValue.value));
+    console.log(`Created a ${sliderValue.value}x${sliderValue.value} grid`);  
+});
+
+
+
+
+
+
+
+// createBlocks(1);
+// createBlocks(16);
+// console.log("Created a 16x16 grid");    
+// createBlocks(24);
+// createBlocks(60);
 
 // let blocks = document.querySelectorAll(".block");
 
