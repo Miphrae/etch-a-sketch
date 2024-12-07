@@ -4,10 +4,62 @@ let flagRainbow = 0;
 let flagEraser = 0;
 let toggleGrid = document.querySelector("#grid-line");
 let activeGrid = 1;
+let flagDarken = 0;
+let flagLighten = 0;
 let colorInput = document.querySelector("#favcolor");
 let color = colorInput.getAttribute("value");
 let active = document.querySelector("#color-mode");
+let darkLight = 0;
 
+function RGBToHex(rgb) {
+    // Choose correct separator
+    let sep = rgb.indexOf(",") > -1 ? "," : " ";
+    // Turn "rgb(r,g,b)" into [r,g,b]
+    rgb = rgb.substr(4).split(")")[0].split(sep);
+  
+    let r = (+rgb[0]).toString(16),
+        g = (+rgb[1]).toString(16),
+        b = (+rgb[2]).toString(16);
+  
+    if (r.length == 1)
+      r = "0" + r;
+    if (g.length == 1)
+      g = "0" + g;
+    if (b.length == 1)
+      b = "0" + b;
+  
+    return "#" + r + g + b;
+  }
+
+function LightenDarkenColor(col, amt) {
+  
+    var usePound = false;
+  
+    if (col[0] == "#") {
+        col = col.slice(1);
+        usePound = true;
+    }
+ 
+    var num = parseInt(col,16);
+ 
+    var r = (num >> 16) + amt;
+ 
+    if (r > 255) r = 255;
+    else if  (r < 0) r = 0;
+ 
+    var b = ((num >> 8) & 0x00FF) + amt;
+ 
+    if (b > 255) b = 255;
+    else if  (b < 0) b = 0;
+ 
+    var g = (num & 0x0000FF) + amt;
+ 
+    if (g > 255) g = 255;
+    else if (g < 0) g = 0;
+ 
+    return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
+  
+}
 
 function createBlocks(n) {
     // let grid = document.createElement("div");
@@ -29,8 +81,15 @@ function createBlocks(n) {
         row.setAttribute("id", `row${i+1}`)
         for (let j = 0; j < n; j++) {
             let block = document.createElement("div");
-            block.setAttribute("style", "flex: 1 1 auto;  border: 1px solid rgb(156, 156, 156); background-color: rgb(218, 218, 218); aspect-ratio: 1");
+            block.setAttribute("style", "flex: 1 1 auto;  border-top: 1px solid rgb(156, 156, 156); border-left: 1px solid rgb(156, 156, 156); background-color: rgb(218, 218, 218); aspect-ratio: 1");
             block.setAttribute("class", "block");
+            if (i == (n-1)) {
+                block.style.borderBottom = "1px solid rgb(156, 156, 156)";
+            };
+            if (j == (n-1)) {
+                block.style.borderRight = "1px solid rgb(156, 156, 156)";
+            };
+            //#dadada
             row.appendChild(block);
         }
         grid.appendChild(row);
@@ -72,12 +131,19 @@ function createBlocks(n) {
     // });
 
     grid.addEventListener("mousedown", (event) => {
+        // console.log("clicked");
         if (event.target.classList.contains("block")) {
             isMouseDown = true;
+            // console.log(event.target.style.backgroundColor);
             event.target.style.backgroundColor = flagRainbow
                 ? `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
                 : flagEraser
                 ? "rgb(218, 218, 218)"
+                : flagDarken
+                ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), -10)
+                // ? console.log("dark activated")
+                : flagLighten
+                ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), 10)
                 : color;
         }
     });
@@ -85,10 +151,15 @@ function createBlocks(n) {
     grid.addEventListener("mouseover", (event) => {
         if (isMouseDown && event.target.classList.contains("block")) {
             event.target.style.backgroundColor = flagRainbow
-                ? `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
-                : flagEraser
-                ? "rgb(218, 218, 218)"
-                : color;
+            ? `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
+            : flagEraser
+            ? "rgb(218, 218, 218)"
+            : flagDarken
+            ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), -10)
+            : flagLighten
+            ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), 10)
+            // ? console.log("dark activated")
+            : color;
         }
     });
     
@@ -142,13 +213,19 @@ let btn = document.querySelectorAll(".btn");
                 color = colorInput.value;
                 flagRainbow = 0;
                 flagEraser = 0;
+                flagDarken = 0;
+                flagLighten = 0;
             }
             else if (el.getAttribute("id") == "rainbow-mode") {
                 flagEraser - 0;
+                flagDarken = 0;
+                flagLighten = 0;
                 flagRainbow = 1;
             }
             else if (el.getAttribute("id") == "eraser") {
                 flagRainbow = 0;
+                flagDarken = 0;
+                flagLighten = 0;
                 flagEraser = 1;
             }
             else if  (el.getAttribute("id") == "clear") {
@@ -157,6 +234,18 @@ let btn = document.querySelectorAll(".btn");
                     block.style.backgroundColor = "rgb(218, 218, 218)";
                 });
                 active.classList.remove("active");
+            }
+            else if (el.getAttribute("id") == "shading-mode") {
+                flagRainbow = 0;
+                flagDarken = 1;
+                flagLighten = 0;
+                flagEraser = 0;
+            }
+            else if (el.getAttribute("id") == "lighting-mode") {
+                flagRainbow = 0;
+                flagDarken = 0;
+                flagLighten = 1;
+                flagEraser = 0;
             };
 
 
