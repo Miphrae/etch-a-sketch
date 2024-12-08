@@ -10,7 +10,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 15vh;
+    min-height: 15vh;
     background-color: antiquewhite;
 }
 
@@ -18,7 +18,9 @@ body {
 #container {
     display: flex;
     justify-content: center;
-    gap: 10vw;
+    align-items: center;
+    gap: 4vw;
+    flex-wrap: wrap;
 }
 
 #options {
@@ -27,10 +29,13 @@ body {
     align-items: center;
     height: 71vh;
     width:13vw;
+    min-width: 150px;
+    flex-shrink: 0;
     border-radius: 8px;
     justify-content: center;
-    background-color: brown;
+    /* background-color: brown; */
     gap: 4vh;
+    /* box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px; */
     
 }
 
@@ -43,19 +48,42 @@ body {
     align-items: center;
 }
 
+#scale {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5vh
+}
+
+#myRange{
+    width: 10vw;
+}
+
+
+
 .active {
     background-color:blueviolet;
 }
 
 #grid {
-    height: 65vh;
-    width: 65vh;
+    /* height: 65vh;
+    width: 65vh; */
+    height: 60vh;
+    width: 60vh;
+    min-width: 40vh;
     display: flex;
     flex-direction: column;
     /* padding: 5vh; */
-    border: solid 3vh black;
-    border-radius: 25px;
+    border: solid 4vh black;
+    border-radius: 10px;
     background-color: rgb(218, 218, 218);
+    flex-shrink: 0;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+
+    
 }
 
 
@@ -68,6 +96,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 10vh;
+    min-height: 10vh;
     background-color: antiquewhite;
 }

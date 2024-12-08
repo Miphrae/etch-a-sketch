@@ -1,4 +1,5 @@
 let sliderValue = document.querySelector("#myRange");
+let scaleValue = document.querySelector("#scale-value");
 const grid = document.querySelector("#grid");
 let flagRainbow = 0;
 let flagEraser = 0;
@@ -13,53 +14,32 @@ let darkLight = 0;
 let isMouseDown = false;
 
 function RGBToHex(rgb) {
-    // Choose correct separator
-    let sep = rgb.indexOf(",") > -1 ? "," : " ";
-    // Turn "rgb(r,g,b)" into [r,g,b]
-    rgb = rgb.substr(4).split(")")[0].split(sep);
-  
-    let r = (+rgb[0]).toString(16),
-        g = (+rgb[1]).toString(16),
-        b = (+rgb[2]).toString(16);
-  
-    if (r.length == 1)
-      r = "0" + r;
-    if (g.length == 1)
-      g = "0" + g;
-    if (b.length == 1)
-      b = "0" + b;
-  
-    return "#" + r + g + b;
-  }
+    // Ensure it's only the rgb part (strip "rgba" or any alpha channel)
+    rgb = rgb.replace(/rgba?\(/, "").split(")")[0]; 
+    let [r, g, b] = rgb.split(/,\s*/).map(Number);
+
+    // Convert to hex and pad with 0s if needed
+    r = r.toString(16).padStart(2, "0");
+    g = g.toString(16).padStart(2, "0");
+    b = b.toString(16).padStart(2, "0");
+
+    return `#${r}${g}${b}`;
+}
 
 function LightenDarkenColor(col, amt) {
-  
-    var usePound = false;
-  
-    if (col[0] == "#") {
+    let usePound = col.startsWith("#");
+
+    if (usePound) {
         col = col.slice(1);
-        usePound = true;
     }
- 
-    var num = parseInt(col,16);
- 
-    var r = (num >> 16) + amt;
- 
-    if (r > 255) r = 255;
-    else if  (r < 0) r = 0;
- 
-    var b = ((num >> 8) & 0x00FF) + amt;
- 
-    if (b > 255) b = 255;
-    else if  (b < 0) b = 0;
- 
-    var g = (num & 0x0000FF) + amt;
- 
-    if (g > 255) g = 255;
-    else if (g < 0) g = 0;
- 
-    return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
-  
+
+    let num = parseInt(col, 16);
+    let r = Math.max(0, Math.min(255, (num >> 16) + amt));
+    let g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amt));
+    let b = Math.max(0, Math.min(255, (num & 0x0000FF) + amt));
+
+    return (usePound ? "#" : "") + 
+           [r, g, b].map(v => v.toString(16).padStart(2, "0")).join("");
 }
 
 // Event handler for 'mousedown' on grid
@@ -74,7 +54,7 @@ function onMouseDown(event) {
             : flagDarken
             ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), -20)
             : flagLighten
-            ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), +20)
+            ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), +10)
             : color;
     };
 }
@@ -89,7 +69,7 @@ function onMouseOver(event) {
             : flagDarken
             ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), -20)
             : flagLighten
-            ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), +20)
+            ? LightenDarkenColor(RGBToHex(event.target.style.backgroundColor), +10)
             : color;
     };
 }
@@ -321,6 +301,8 @@ sliderValue.addEventListener('change', () => {
     // console.log(sliderValue.value);
     createBlocks(parseInt(sliderValue.value));
     console.log(`Created a ${sliderValue.value}x${sliderValue.value} grid`);  
+    scaleValue.textContent = `${sliderValue.value} x ${sliderValue.value}`;
+    // console.log(scaleValue.textContent);
 });
 
 
